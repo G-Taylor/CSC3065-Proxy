@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def proxy_home():
-    return 0
+    return "Hello"
 
 
 if __name__ == '__main__':
