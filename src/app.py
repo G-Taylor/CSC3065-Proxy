@@ -20,6 +20,8 @@ def proxy_home():
     function_found = False
     sentence = request.args.get('text')
     editor_function = request.args.get('func')
+    print("Editor Function: ", editor_function)
+    print("Sentence: ", sentence)
 
     for func, url in function_dict.items():
         if func == editor_function:
@@ -40,7 +42,7 @@ def proxy_home():
         # return generate_response(output)
 
     else:
-        query = editor_function + "/?text=" + sentence
+        query = editor_function + "/?text=" + str(sentence)
         output = requests.get(query)
         # json_output = json.dumps(output)
         response = flask.Response(output)
