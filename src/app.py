@@ -17,47 +17,35 @@ def proxy_home():
         "average": "http://avgword.40234272.qpc.hal.davecutting.uk",
         "and": "http://andcount.40234272.qpc.hal.davecutting.uk"
     }
+
     function_found = False
     sentence = request.args.get('text')
     editor_function = request.args.get('func')
-    print("Editor Function: ", editor_function)
-    print("Sentence: ", sentence)
 
     for func, url in function_dict.items():
         if func == editor_function:
             function_found = True
             editor_function = url
 
-    if not function_found:
+    if not function_found or editor_function is None:
         output = {
             "error": True,
             "sentence": "Invalid Function",
             "answer": 0
         }
-        # json_output = json.dumps(output)
-        response = flask.Response(output)
+        json_output = json.dumps(output)
+        response = flask.Response(json_output)
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
-        # return generate_response(output)
 
     else:
-        query = editor_function + "/?text=" + str(sentence)
+        query = editor_function + "/?text=" + sentence
         output = requests.get(query)
-        # json_output = json.dumps(output)
         response = flask.Response(output)
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
-        # return generate_response(output)
-
-
-def generate_response(output):
-    # json_output = json.dumps(output)
-    response = flask.Response(output)
-    response.headers['Content-Type'] = 'application/json'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
 
 
 if __name__ == '__main__':
