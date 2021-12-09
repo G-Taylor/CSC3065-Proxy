@@ -32,30 +32,30 @@ def proxy_home():
             "sentence": "Invalid Function",
             "answer": 0
         }
-        json_output = json.dumps(output)
-        response = flask.Response(json_output)
+        # json_output = json.dumps(output)
+        response = flask.Response(output)
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
         # return generate_response(output)
 
     else:
-        query = f"{editor_function}/?text{sentence}"
+        query = editor_function + "/?text=" + sentence
         output = requests.get(query)
-        json_output = json.dumps(output)
-        response = flask.Response(json_output)
+        # json_output = json.dumps(output)
+        response = flask.Response(output)
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
         # return generate_response(output)
 
 
-# def generate_response(output):
+def generate_response(output):
     # json_output = json.dumps(output)
-    # response = flask.Response(json_output)
-    # response.headers['Content-Type'] = 'application/json'
-    # response.headers['Access-Control-Allow-Origin'] = '*'
-    # return response
+    response = flask.Response(output)
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 if __name__ == '__main__':
