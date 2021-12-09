@@ -27,6 +27,7 @@ def proxy_home():
             function_found = True
             editor_function = url
 
+    # Check for a valid function
     if not function_found or editor_function is None:
         output = {
             "error": True,
@@ -39,13 +40,40 @@ def proxy_home():
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
 
-    else:
-        query = editor_function + "/?text=" + sentence
-        output = requests.get(query)
-        response = flask.Response(output)
+    # Check for a valid sentence
+    elif sentence == "" or sentence == None:
+        output = {
+            "error": True,
+            "sentence": "No Text Entered",
+            "answer": 0
+        }
+        json_output = json.dumps(output)
+        response = flask.Response(json_output)
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
+
+    # Get response from valid function and query
+    else:
+        query = editor_function + "/?text=" + sentence
+        output = requests.get(query)
+        # Check for a valid response
+        if output.status_code != 200:
+            output = {
+            "error": True,
+            "sentence": "Incorrect Respone, Error Code: " + output.status_code,
+            "answer": 0
+            }
+            json_output = json.dumps(output)
+            response = flask.Response(json_output)
+            response.headers['Content-Type'] = 'application/json'
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response
+        else:
+            response = flask.Response(output)
+            response.headers['Content-Type'] = 'application/json'
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response
 
 
 if __name__ == '__main__':
