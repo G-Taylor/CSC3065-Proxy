@@ -1,7 +1,8 @@
 import json
 from flask import Flask, request
 import requests
-import flask    
+import flask 
+from function_list import FUNCTIONS   
 
 app = Flask(__name__)
 
@@ -9,25 +10,18 @@ app = Flask(__name__)
 @app.route("/")
 def proxy_home():
 
-    function_dict = {
-        "wordcount": "http://wordcount.40234272.qpc.hal.davecutting.uk",
-        "charcount": "http://charcount.40234272.qpc.hal.davecutting.uk",
-        "vowelcount": "http://vowel.40234272.qpc.hal.davecutting.uk",
-        "palindrome": "http://palindrome.40234272.qpc.hal.davecutting.uk",
-        "average": "http://avgword.40234272.qpc.hal.davecutting.uk",
-        "and": "http://andcount.40234272.qpc.hal.davecutting.uk"
-    }
-
     function_found = False
+    # get parameters
     sentence = request.args.get('text')
     editor_function = request.args.get('func')
 
-    for func, url in function_dict.items():
+    # check external list of function endpoints to find a match
+    for func, url in FUNCTIONS.items():
         if func == editor_function:
             function_found = True
             editor_function = url
 
-    # Check for a valid function
+    # Output for an incorrect function
     if not function_found or editor_function is None:
         output = {
             "error": True,
@@ -40,7 +34,7 @@ def proxy_home():
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
 
-    # Check for a valid sentence
+    # Output for an invalid sentence
     elif sentence == "" or sentence == None:
         output = {
             "error": True,
@@ -57,7 +51,7 @@ def proxy_home():
     else:
         query = editor_function + "/?text=" + sentence
         output = requests.get(query)
-        # Check for a valid response
+        # Output for an invalid response
         if output.status_code != 200:
             output = {
             "error": True,
